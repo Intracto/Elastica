@@ -18,6 +18,12 @@ abstract class AbstractAggregation extends Param implements NameableInterface
     protected $_aggs = [];
 
     /**
+     * @var array Metadata belonging to this aggregation
+     * @see https://www.elastic.co/guide/en/elasticsearch/reference/current/agg-metadata.html
+     */
+    protected $_meta = [];
+
+    /**
      * @param string $name the name of this aggregation
      */
     public function __construct($name)
@@ -80,6 +86,20 @@ abstract class AbstractAggregation extends Param implements NameableInterface
     }
 
     /**
+     * Add metadata.
+     *
+     * @param mixed $metadata
+     *   The metadata to add.
+     *
+     * @return $this
+     */
+    public function addMetaData($metadata) {
+        $this->_meta = array_merge($this->_meta, (array) $metadata);
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function toArray()
@@ -90,8 +110,11 @@ abstract class AbstractAggregation extends Param implements NameableInterface
             // compensate for class name GlobalAggregation
             $array = ['global' => new \stdClass()];
         }
-        if (sizeof($this->_aggs)) {
+        if (count($this->_aggs)) {
             $array['aggs'] = $this->_convertArrayable($this->_aggs);
+        }
+        if (count($this->_meta)) {
+            $array['meta'] = $this->_meta;
         }
 
         return $array;
