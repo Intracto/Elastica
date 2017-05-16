@@ -1,5 +1,8 @@
 <?php
+
 namespace Elastica\Query;
+
+use Elastica\Param;
 
 /**
  * Wildcard query.
@@ -10,12 +13,13 @@ namespace Elastica\Query;
  */
 class Wildcard extends AbstractQuery
 {
+
     /**
      * Construct wildcard query.
      *
-     * @param string $key   OPTIONAL Wildcard key
+     * @param string $key OPTIONAL Wildcard key
      * @param string $value OPTIONAL Wildcard value
-     * @param float  $boost OPTIONAL Boost value (default = 1)
+     * @param float $boost OPTIONAL Boost value (default = 1)
      */
     public function __construct($key = '', $value = null, $boost = 1.0)
     {
@@ -29,12 +33,30 @@ class Wildcard extends AbstractQuery
      *
      * @param string $key
      * @param string $value
-     * @param float  $boost
+     * @param float $boost
      *
      * @return $this
      */
     public function setValue($key, $value, $boost = 1.0)
     {
         return $this->setParam($key, ['value' => $value, 'boost' => $boost]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray()
+    {
+        $data = Param::toArray();
+        if ($this->_name) {
+            $baseName = $this->_getBaseName();
+            if (is_array($data[$baseName])) {
+                foreach ($data[$baseName] as $key => &$value) {
+                    $value['_name'] = $this->_name;
+                }
+            }
+        }
+
+        return $data;
     }
 }
