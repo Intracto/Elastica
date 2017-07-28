@@ -60,9 +60,6 @@ class Filter extends AbstractAggregation
             throw new InvalidException('Filter is required');
         }
 
-        $array = parent::toArray();
-        $array['filter'] = $this->getParam('filter')->toArray();
-
-        return $array;
+        return parent::toArray();
     }
 }

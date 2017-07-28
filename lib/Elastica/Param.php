@@ -35,7 +35,11 @@ class Param implements ArrayableInterface
      */
     public function toArray()
     {
-        $data = [$this->_getBaseName() => $this->getParams()];
+        $baseName = $this->_getBaseName();
+        $data = [$baseName => $this->getParams()];
+        if ($this->hasParam($baseName)) {
+            $data = $this->getParams();
+        }
 
         if (!empty($this->_rawParams)) {
             $data = array_merge($data, $this->_rawParams);
@@ -172,7 +176,7 @@ class Param implements ArrayableInterface
      */
     public function hasParam($key)
     {
-        return isset($this->_params[$key]);
+        return (is_array($this->_params)) ? isset($this->_params[$key]) : FALSE;
     }
 
     /**
